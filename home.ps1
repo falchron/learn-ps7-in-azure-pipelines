@@ -3,12 +3,6 @@
 # --------------------------------------------------------------------------
 $clientAgent = 'Linux'  # Hier anpassen, falls ein anderer Typ gewünscht ist.
 
-# --------------------------------------------------------------------------
-# Setze alle vordefinierten Variablen (ohne Dopplungen)
-# – zuerst: Basis (erste 14 Zeilen deiner Vorlage)
-# – anschließend: zusätzliche Variablen (Agent, Build, System, Release)
-# Die Pfade werden gemäß $clientAgent angepasst.
-# --------------------------------------------------------------------------
 switch ($clientAgent) {
     "Linux" {
         # Basis-Vorlage (erste 14 Zeilen) und OS-spezifische Einstellungen
