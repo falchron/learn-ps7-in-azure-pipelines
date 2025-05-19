@@ -278,20 +278,98 @@ function global:Prompt {
 } 
 
 function global:help {
-    Write-Host "Folgende env: Demo Varibalen sind vordefiniert:"
-    Write-Host "`$env:AGENT_NAME" => " VALUE: " "`'$env:AGENT_NAME'"
-    Write-Host "`$env:AGENT_OS " => " VALUE: " "`'$env:AGENT_OS'"
-    Write-Host "`$env:AGENT_OSARCHITECTURE" => " VALUE: " "`'$env:AGENT_OSARCHITECTURE'"
-    Write-Host "`$env:AGENT_TEMPDIRECTORY" => " VALUE: " "`'$env:AGENT_TEMPDIRECTORY'"
-    Write-Host "`$env:AGENT_TOOLSDIRECTORY" => " VALUE: " "`'$env:AGENT_TOOLSDIRECTORY'"
-    Write-Host "`$env:AGENT_BUILDDIRECTORY" => " VALUE: " "`'$env:AGENT_BUILDDIRECTORY'"
-    Write-Host "`$env:BUILD_SOURCESDIRECTORY" => " VALUE: " "`'$env:BUILD_SOURCESDIRECTORY'"
-    Write-Host "`$env:BUILD_ARTIFACTSTAGINGDIRECTORY" => " VALUE: " "`'$env:BUILD_ARTIFACTSTAGINGDIRECTORY'"
-    Write-Host "`$env:BUILD_BINARIESDIRECTORY" => " VALUE: " "`'$env:BUILD_BINARIESDIRECTORY'"
-    Write-Host "`$env:SYSTEM_COLLECTIONURI" => " VALUE: " "`'$env:SYSTEM_COLLECTIONURI'"
-    Write-Host "`$env:SYSTEM_TEAMPROJECT" => " VALUE: " "`'$env:SYSTEM_TEAMPROJECT'"
-    Write-Host "`$env:SYSTEM_DEFINITIONID" => " VALUE: " "'$env:SYSTEM_DEFINITIONID'"
-    Write-Host "`$env:SYSTEM_HOSTTYPE" => " VALUE: " "`'$env:SYSTEM_HOSTTYPE'"
+    # Überschrift
+    Write-Host "===============================================" -ForegroundColor Cyan
+    Write-Host "     Azure DevOps vordefinierte Variablen" -ForegroundColor Cyan
+    Write-Host "===============================================" -ForegroundColor Cyan
+    Write-Host ""
+
+    # Hilfsfunktion zum Ausgeben einer Gruppe von Variablen
+    function Print-Group ($groupName, [string[]]$varList) {
+        Write-Host "----- $groupName -----" -ForegroundColor Yellow
+        foreach ($var in $varList) {
+            # Lese den Wert aus der Umgebung – falls die Variable nicht gesetzt ist, wird ein leerer String geliefert.
+            $value = (Get-Item "env:$var" -ErrorAction SilentlyContinue).Value
+            if (-not $value) { $value = "[nicht gesetzt]" }
+            # Formatiere Zeile: Variablenname linksbündig (40 Zeichen) und anschließend der zugehörige Wert
+            Write-Host ("{0,-40} : {1}" -f "`$env:$var", $value) -ForegroundColor White
+        }
+        Write-Host ""
+    }
+
+    # Definition der Variablen-Gruppen (Doppelte aus der Vorlage sind hier nur einmal enthalten)
+    $basisVars = @(
+        'AGENT_NAME',
+        'AGENT_OS',
+        'AGENT_OSARCHITECTURE',
+        'AGENT_TEMPDIRECTORY',
+        'AGENT_TOOLSDIRECTORY',
+        'AGENT_BUILDDIRECTORY',
+        'BUILD_SOURCESDIRECTORY',
+        'BUILD_ARTIFACTSTAGINGDIRECTORY',
+        'BUILD_BINARIESDIRECTORY',
+        'SYSTEM_COLLECTIONURI',
+        'SYSTEM_TEAMPROJECT',
+        'SYSTEM_DEFINITIONID',
+        'SYSTEM_HOSTTYPE'
+    )
+
+    $agentVars = @(
+        'AGENT_ID',
+        'AGENT_MACHINE_NAME',
+        'AGENT_HOMEDIRECTORY',
+        'AGENT_VERSION',
+        'AGENT_WORKFOLDER'
+    )
+
+    $buildVars = @(
+        'BUILD_BUILDID',
+        'BUILD_BUILDNUMBER',
+        'BUILD_BUILDURI',
+        'BUILD_DEFINITIONVERSION',
+        'BUILD_REASON',
+        'BUILD_REQUESTEDFOR',
+        'BUILD_REQUESTEDFOREMAIL',
+        'BUILD_SOURCEBRANCH',
+        'BUILD_SOURCEBRANCHNAME',
+        'BUILD_SOURCEVERSION',
+        'BUILD_REPOSITORY_NAME',
+        'BUILD_REPOSITORY_PROVIDER',
+        'BUILD_REPOSITORY_URI'
+    )
+
+    $systemVars = @(
+        'SYSTEM_ACCESSTOKEN',
+        'SYSTEM_COLLECTIONID',
+        'SYSTEM_DEFAULTWORKINGDIRECTORY',
+        'SYSTEM_DEFINITIONNAME',
+        'SYSTEM_JOBID',
+        'SYSTEM_JOBATTEMPT',
+        'SYSTEM_JOBPOSITIONINPHASE',
+        'SYSTEM_PHASEDISPLAYNAME',
+        'SYSTEM_PLANID',
+        'SYSTEM_PULLREQUEST_PULLREQUESTID',
+        'SYSTEM_STAGEDISPLAYNAME',
+        'SYSTEM_TEAMPROJECTID',
+        'SYSTEM_TF_COLLECTION',
+        'SYSTEM_TASKINSTANCEID',
+        'SYSTEM_TEAMFOUNDATIONSERVERURI',
+        'SYSTEM_DEBUG'
+    )
+
+    $releaseVars = @(
+        'RELEASE_RELEASEID',
+        'RELEASE_RELEASENAME',
+        'RELEASE_ENVIRONMENTNAME',
+        'RELEASE_ENVIRONMENTURI'
+    )
+
+    # Ausgabe der Variablengruppen
+    Print-Group "Basis-Variablen" $basisVars
+    Print-Group "Agent-Variablen" $agentVars
+    Print-Group "Build-Variablen" $buildVars
+    Print-Group "System-Variablen" $systemVars
+    Print-Group "Release-Variablen" $releaseVars
 }
 
 Write-Host ""
